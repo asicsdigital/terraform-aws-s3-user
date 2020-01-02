@@ -1,11 +1,11 @@
-data "aws_iam_policy_document" "source_write" {
+data "aws_iam_policy_document" "user_policy" {
   statement {
     actions = [
       "s3:PutObject",
     ]
 
     resources = [
-      "${local.source_bucket_object_arn}",
+      "${local.object_arn}",
     ]
   }
 
@@ -15,30 +15,27 @@ data "aws_iam_policy_document" "source_write" {
     ]
 
     resources = [
-      "${local.source_bucket_arn}",
+      "${local.bucket_arn}",
     ]
   }
 }
 
-resource "aws_iam_policy" "source_write" {
-  provider    = "aws.source"
-  name_prefix = "${local.replication_name}-source-write-"
-  policy      = "${data.aws_iam_policy_document.source_write.json}"
+resource "aws_iam_policy" "user_policy" {
+  name_prefix = "${var.user_name}-"
+  policy      = "${data.aws_iam_policy_document.user_policy.json}"
 }
 
-resource "aws_iam_user" "source_write" {
-  provider      = "aws.source"
-  name          = "${local.replication_name}-source-write-user"
-  force_destroy = true
+resource "aws_iam_user" "user" {
+  name          = "${var.user_name}"
+  force_destroy = "${var.force_destroy}"
 }
 
-resource "aws_iam_user_policy_attachment" "source_write" {
+resource "aws_iam_user_policy_attachment" "user_policy" {
   provider   = "aws.source"
-  user       = "${aws_iam_user.source_write.name}"
-  policy_arn = "${aws_iam_policy.source_write.arn}"
+  user       = "${aws_iam_user.user.name}"
+  policy_arn = "${aws_iam_policy.user_policy.arn}"
 }
 
-resource "aws_iam_access_key" "source_write" {
-  provider = "aws.source"
-  user     = "${aws_iam_user.source_write.name}"
+resource "aws_iam_access_key" "key" {
+  user     = "${aws_iam_user.user.name}"
 }
