@@ -1,36 +1,19 @@
-variable "source_region" {
+variable "bucket_name" {
   type        = "string"
-  description = "AWS region for the source bucket"
+  description = "Name for s3 bucket"
 }
 
-variable "dest_region" {
+variable "prefix" {
   type        = "string"
-  description = "AWS region for the destination bucket"
+  description = "Prefix to grant access to, note this module does not add any trailing /"
 }
 
-variable "source_bucket_name" {
+variable "user_name" {
   type        = "string"
-  description = "Name for source s3 bucket"
+  description = "Short name for the IAM user to create"
 }
 
-variable "replicate_prefix" {
-  type        = "string"
-  description = "Prefix to replicate, default \"\" for all objects. Note if specifying, must end in a /"
-  default     = ""
-}
-
-variable "dest_bucket_name" {
-  type        = "string"
-  description = "Name for dest s3 bucket"
-}
-
-variable "create_dest_bucket" {
-  type        = "string"
-  description = "Boolean for whether this module should create the destination bucket"
-  default     = "true"
-}
-
-variable "replication_name" {
-  type        = "string"
-  description = "Short name to describe this replication"
+variable "force_destroy" {
+  default     = true
+  description = "Force_destroy the IAM user created by this module? (Default true)"
 }
