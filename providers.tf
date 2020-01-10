@@ -1,3 +1,5 @@
+provider "aws" {}
+
 provider "aws" {
   alias = "source"
 }
