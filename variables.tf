@@ -17,3 +17,13 @@ variable "force_destroy" {
   default     = true
   description = "Force_destroy the IAM user created by this module? (Default true)"
 }
+
+variable "write_access" {
+  default     = true
+  description = "Generated policy will have S3:PutObject permission"
+}
+
+variable "delete_access" {
+  default     = false
+  description = "Generated policy will have S3:DeleteObject permission"
+}

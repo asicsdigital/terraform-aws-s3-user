@@ -1,4 +1,25 @@
-data "aws_iam_policy_document" "user_policy" {
+data "aws_iam_policy_document" "user_policy_read" {
+  statement {
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "${local.bucket_arn}",
+    ]
+
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "s3:prefix"
+
+      values = [
+        "${var.prefix}*",
+      ]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "user_policy_read_write" {
   statement {
     actions = [
       "s3:PutObject",
@@ -29,9 +50,41 @@ data "aws_iam_policy_document" "user_policy" {
   }
 }
 
+data "aws_iam_policy_document" "user_policy_read_write_delete" {
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+
+    resources = [
+      "${local.object_arn}",
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "${local.bucket_arn}",
+    ]
+
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "s3:prefix"
+
+      values = [
+        "${var.prefix}*",
+      ]
+    }
+  }
+}
+
 resource "aws_iam_policy" "user_policy" {
   name_prefix = "${var.user_name}-"
-  policy      = "${data.aws_iam_policy_document.user_policy.json}"
+  policy      = "${local.policy}"
 }
 
 resource "aws_iam_user" "user" {
