@@ -17,6 +17,15 @@ data "aws_iam_policy_document" "user_policy" {
     resources = [
       "${local.bucket_arn}",
     ]
+
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "s3:prefix"
+
+      values = [
+        "${var.prefix}*",
+      ]
+    }
   }
 }
 
