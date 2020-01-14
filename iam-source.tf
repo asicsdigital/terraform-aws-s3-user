@@ -19,11 +19,11 @@ data "aws_iam_policy_document" "user_policy" {
     ]
 
     condition {
-      test     = "StringLike"
+      test     = "ForAnyValue:StringLike"
       variable = "s3:prefix"
 
       values = [
-        "${var.prefix}",
+        "${var.prefix}*",
       ]
     }
   }
